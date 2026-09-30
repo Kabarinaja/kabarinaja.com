@@ -1,0 +1,93 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    function signedIn() {
+      return request.auth != null;
+    }
+
+    // Single-publisher bootstrap/admin identity.
+    // Change this value if the Firebase admin email is changed.
+    function isPrimaryAdmin() {
+      return signedIn() && request.auth.token.email == 'kabarterbaru.id@gmail.com';
+    }
+
+    function isSuperAdmin() {
+      return isPrimaryAdmin() || (
+        signedIn() &&
+        exists(/databases/$(database)/documents/authors/$(request.auth.uid)) &&
+        get(/databases/$(database)/documents/authors/$(request.auth.uid)).data.role == 'superadmin'
+      );
+    }
+
+    function isWriter() {
+      return signedIn() &&
+        exists(/databases/$(database)/documents/authors/$(request.auth.uid)) &&
+        get(/databases/$(database)/documents/authors/$(request.auth.uid)).data.role in ['writer', 'superadmin'];
+    }
+
+    match /articles/{articleId} {
+      allow read: if resource.data.status == 'published' || isWriter();
+      allow create: if isSuperAdmin() || (isWriter() && request.resource.data.authorId == request.auth.uid);
+      allow update: if isSuperAdmin() || (
+        isWriter() &&
+        resource.data.authorId == request.auth.uid &&
+        request.resource.data.authorId == request.auth.uid
+      );
+      allow delete: if isSuperAdmin();
+    }
+
+    match /categories/{categoryId} {
+      allow read: if true;
+      allow write: if isSuperAdmin();
+    }
+
+    match /authors/{uid} {
+      allow read: if true;
+      // The primary admin may bootstrap/update the profile bound to their UID.
+      allow create: if isPrimaryAdmin() && uid == request.auth.uid;
+      allow update: if isSuperAdmin() && (
+        isPrimaryAdmin() || uid == request.auth.uid
+      );
+      allow delete: if isSuperAdmin() && !isPrimaryAdmin();
+    }
+
+    match /ads/{adId} {
+      allow read: if resource.data.active == true || isSuperAdmin();
+      allow write: if isSuperAdmin();
+    }
+
+    match /siteSettings/{settingId} {
+      allow read: if true;
+      allow write: if isSuperAdmin();
+    }
+
+    match /media/{mediaId} {
+      allow read, write: if isSuperAdmin();
+    }
+
+    // Public article comments. Comments are intentionally permanent:
+    // the client has no delete/update path, and rules only allow a +1 like update.
+    match /comments/{commentId} {
+      allow read: if true;
+      allow create: if request.resource.data.keys().hasOnly(['articleId', 'name', 'message', 'createdAt', 'likes'])
+        && request.resource.data.articleId is string
+        && request.resource.data.name is string
+        && request.resource.data.message is string
+        && request.resource.data.name.size() >= 1
+        && request.resource.data.name.size() <= 80
+        && request.resource.data.message.size() >= 1
+        && request.resource.data.message.size() <= 1000
+        && request.resource.data.likes == 0
+        && request.resource.data.createdAt == request.time
+        && exists(/databases/$(database)/documents/articles/$(request.resource.data.articleId))
+        && get(/databases/$(database)/documents/articles/$(request.resource.data.articleId)).data.status == 'published';
+      allow update: if request.resource.data.diff(resource.data).affectedKeys().hasOnly(['likes'])
+        && request.resource.data.likes == resource.data.likes + 1;
+      allow delete: if false;
+    }
+
+    match /{document=**} {
+      allow read, write: if false;
+    }
+  }
+}
