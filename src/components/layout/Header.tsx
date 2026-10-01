@@ -21,7 +21,6 @@ export const Header: React.FC = () => {
     });
   }, []);
 
-  // Format today's date in Indonesian
   const getTodayDateIndonesian = () => {
     const today = new Date();
     const days = ['Minggu', 'Senin', 'Selasa', 'Rabu', 'Kamis', 'Jumat', 'Sabtu'];
@@ -43,11 +42,8 @@ export const Header: React.FC = () => {
 
   return (
     <header className="w-full bg-white border-b border-gray-200 sticky top-0 z-40 shadow-2xs">
-      {/* 2. MAIN BRAND HEADER */}
       <div className="max-w-7xl mx-auto px-3 sm:px-4 py-3 sm:py-4 flex items-center justify-between gap-2 sm:gap-4">
-        {/* Left Section: [ ☰ Menu Button ] [ Logo KABARIN AJA ] */}
         <div className="flex items-center gap-2.5 sm:gap-4 min-w-0">
-          {/* Mobile menu trigger */}
           <button
             type="button"
             onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
@@ -57,15 +53,12 @@ export const Header: React.FC = () => {
             {mobileMenuOpen ? <X className="w-7 h-7" /> : <Menu className="w-7 h-7" />}
           </button>
 
-          {/* Brand Logo & Tagline */}
           <Link to="/" className="flex items-center justify-start gap-2.5 sm:gap-4 shrink-0 min-w-0">
             <img
-            <img
-  src="https://cdn.phototourl.com/member/2026-09-30-8cf912e0-15fa-419a-8730-cf9bd68d8b65.png"
-  alt="KABARIN AJA"
-  className="block h-14 sm:h-16 md:h-20 w-[170px] sm:w-[200px] md:w-[230px] max-w-[45vw] object-contain object-left shrink-0"
-/>
-            
+              src="https://cdn.phototourl.com/member/2026-09-30-8cf912e0-15fa-419a-8730-cf9bd68d8b65.png"
+              alt="KABARIN AJA"
+              className="block h-14 sm:h-16 md:h-20 w-[170px] sm:w-[200px] md:w-[230px] max-w-[45vw] object-contain object-left shrink-0"
+            />
             <div className="hidden sm:block border-l-2 border-gray-300 pl-3.5 py-1">
               <span className="block text-[11px] uppercase font-bold tracking-widest text-[#0b4f8a]">
                 Portal Berita Nasional
@@ -77,9 +70,7 @@ export const Header: React.FC = () => {
           </Link>
         </div>
 
-        {/* Right Section: [ 🔍 Search ] */}
         <div className="flex items-center justify-end shrink-0">
-          {/* Search Bar (Desktop / Tablet) */}
           <div className="hidden md:flex items-center max-w-sm w-56 lg:w-72">
             <form onSubmit={handleSearchSubmit} className="relative w-full">
               <input
@@ -99,7 +90,6 @@ export const Header: React.FC = () => {
             </form>
           </div>
 
-          {/* Mobile Search Button */}
           <div className="md:hidden flex items-center">
             <button
               type="button"
@@ -113,7 +103,6 @@ export const Header: React.FC = () => {
         </div>
       </div>
 
-      {/* Expandable Search Input (Mobile) */}
       {searchOpen && (
         <div className="md:hidden px-4 pb-3 border-b border-gray-200 bg-gray-50">
           <form onSubmit={handleSearchSubmit} className="relative">
@@ -135,7 +124,6 @@ export const Header: React.FC = () => {
         </div>
       )}
 
-      {/* 3. CATEGORY NAVIGATION BAR (12 Categories) */}
       <nav className="bg-[#0b4f8a] text-white overflow-x-auto no-scrollbar shadow-xs">
         <div className="max-w-7xl mx-auto px-4 flex items-center whitespace-nowrap">
           <Link
@@ -168,7 +156,6 @@ export const Header: React.FC = () => {
         </div>
       </nav>
 
-      {/* 4. MOBILE DRAWER MENU */}
       {mobileMenuOpen && (
         <div className="lg:hidden fixed inset-0 top-[110px] sm:top-[120px] bg-black/50 z-50 flex">
           <div className="w-4/5 max-w-xs bg-white h-full shadow-xl overflow-y-auto p-4 flex flex-col justify-between">
