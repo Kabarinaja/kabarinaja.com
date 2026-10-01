@@ -60,10 +60,12 @@ export const Header: React.FC = () => {
           {/* Brand Logo & Tagline */}
           <Link to="/" className="flex items-center justify-start gap-2.5 sm:gap-4 shrink-0 min-w-0">
             <img
-              src="https://cdn.phototourl.com/member/2026-09-30-8cf912e0-15fa-419a-8730-cf9bd68d8b65.png"
-              alt="KABARIN AJA"
-              className="block h-12 sm:h-14 md:h-16 w-[138px] sm:w-[165px] md:w-[185px] max-w-[42vw] object-contain object-left shrink-0"
-            />
+            <img
+  src="https://cdn.phototourl.com/member/2026-09-30-8cf912e0-15fa-419a-8730-cf9bd68d8b65.png"
+  alt="KABARIN AJA"
+  className="block h-14 sm:h-16 md:h-20 w-[170px] sm:w-[200px] md:w-[230px] max-w-[45vw] object-contain object-left shrink-0"
+/>
+            
             <div className="hidden sm:block border-l-2 border-gray-300 pl-3.5 py-1">
               <span className="block text-[11px] uppercase font-bold tracking-widest text-[#0b4f8a]">
                 Portal Berita Nasional
